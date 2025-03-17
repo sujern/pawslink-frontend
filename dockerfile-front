@@ -1,0 +1,11 @@
+FROM node:18.19.1 AS stage1
+COPY front/ /nodeproj/
+WORKDIR /nodeproj/
+RUN npm install
+RUN npm run build
+
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf
+COPY --from=stage1 /nodeproj/dist /usr/share/nginx/html/
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
