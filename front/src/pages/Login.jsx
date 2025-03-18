@@ -77,7 +77,7 @@ const Login = () => {
             onClick={() => navigate("/register")}
             className="text-yellow-500 font-semibold  hover:underline ml-1"
           >
-            Sign up
+            Sign upppppppp
           </button>
         </p>
       </div>
