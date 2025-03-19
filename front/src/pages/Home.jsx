@@ -27,7 +27,7 @@ const HomePage = () => {
                 onClick={() => navigate("/register")}
                 className="bg-white text-blue-600 px-6 py-3 border border-blue-600 rounded-full font-semibold hover:bg-blue-100 transition-all"
               >
-                Sign up
+                Sign upppppppp!
               </button>
             </div>
           </div>
