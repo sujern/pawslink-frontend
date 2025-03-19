@@ -11,7 +11,6 @@ on:
       - closed
 
 jobs:
-
   build-and-push:
     runs-on: ubuntu-latest
 
@@ -27,12 +26,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: Get short commit ID
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./dockerfile-front  # Change if your Dockerfile is elsewhere
+          file: ./dockerfile-front # Change if your Dockerfile is elsewhere
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pawslink:latest
 
