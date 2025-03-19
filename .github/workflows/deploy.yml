@@ -35,7 +35,7 @@ jobs:
           context: .
           file: ./dockerfile-front # Change if your Dockerfile is elsewhere
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pawslink:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest
 
   # deploy:
   #   needs: build-and-push
