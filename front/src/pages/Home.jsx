@@ -21,7 +21,7 @@ const HomePage = () => {
                 onClick={() => navigate("/login")}
                 className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition-all"
               >
-                Sign in
+                Sign innnnn
               </button>
               <button
                 onClick={() => navigate("/register")}
