@@ -15,7 +15,7 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
   const contactLink = getContactLink(contact.contactValue);
 
   return (
-    <li className="bg-gray-100 p-4 rounded-lg shadow hover:bg-gray-200 flex justify-between items-center">
+    <li className="bg-gray-100 rounded-xl shadow-md p-4 hover:bg-gray-50 transition relative group flex justify-between items-center">
       <div>
         <h2 className="text-lg font-semibold text-gray-800">
           {contact.contactType}
@@ -38,16 +38,16 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
       <div className="flex gap-2">
         <button
           onClick={() => onEdit(contact.contactId)}
-          className="p-2 hover:bg-gray-600 rounded-full transition"
+          className="flex justify-center items-center bg-yellow-200 hover:bg-yellow-300 text-yellow-600 w-10 h-10 rounded-full shadow-md transition"
         >
-          <Pencil className="w-5 h-5 text-gray-500 hover:text-gray-200" />
+          <Pencil className="w-5 h-5" />
         </button>
 
         <button
           onClick={() => onDelete(contact.contactId)}
-          className="p-2 hover:bg-gray-600 rounded-full transition"
+          className="flex justify-center items-center bg-red-200 hover:bg-red-300 text-red-600 w-10 h-10 rounded-full shadow-md transition"
         >
-          <Trash2 className="w-5 h-5 text-gray-500 hover:text-gray-200" />
+          <Trash2 className="w-5 h-5" />
         </button>
       </div>
     </li>

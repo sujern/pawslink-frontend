@@ -40,7 +40,7 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile }) => {
         </div>
       </Link>
 
-      <div className="absolute top-1/2 -translate-y-1/2 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition">
+      <div className="absolute top-1/2 -translate-y-1/2 right-4 flex space-x-2">
         <button
           onClick={(e) => {
             e.stopPropagation();
