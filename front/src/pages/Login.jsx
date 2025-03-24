@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Loader2, PawPrint } from "lucide-react";
@@ -6,9 +6,14 @@ import { Loader2, PawPrint } from "lucide-react";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loading, error } = useAuth();
-
+  const { login, loading, error, token } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate("/pets");
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

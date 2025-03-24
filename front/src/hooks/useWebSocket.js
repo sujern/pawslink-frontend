@@ -16,7 +16,7 @@ const useWebSocket = () => {
         const userData = await apiGetUser();
         setUserId(userData.userId);
       } catch (error) {
-        console.error("❌ Failed to fetch user:", error);
+        // Suppress error logging
       }
     };
 
@@ -31,25 +31,22 @@ const useWebSocket = () => {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      debug: (msg) => console.log("STOMP Debug: ", msg),
+      debug: (msg) => console.log("STOMP Debug: ", msg), // Optional: Keep debug logs
       onConnect: () => {
         console.log("✅ Connected to WebSocket");
 
         client.subscribe(`/topic/scan-notification/${userId}`, (message) => {
-          console.log("🔔 New Notification Received:", message.body);
           setNotifications((prev) => [...prev, JSON.parse(message.body)]);
         });
-
-        console.log("📡 Subscribed to /topic/scan-notification");
       },
       onStompError: (frame) => {
-        console.error("❌ STOMP Error:", frame);
+        // Suppress STOMP error logging
       },
       onWebSocketError: (e) => {
-        console.error("❌ WebSocket Error:", e);
+        // Suppress WebSocket error logging
       },
       onDisconnect: () => {
-        console.warn("WebSocket Disconnected");
+        // Suppress disconnect warnings
       },
     });
 

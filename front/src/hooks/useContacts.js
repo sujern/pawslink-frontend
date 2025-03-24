@@ -12,18 +12,18 @@ const useContacts = () => {
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
-    // console.log("Current Token:", token); // ตรวจสอบ token
+    const MIN_LOADING_TIME = 300;
+    const startTime = Date.now();
     try {
       const response = await getContacts();
-      console.log("Response data:", response.data);
       setContacts(response.data);
       setError(null);
     } catch (err) {
-      console.log("Current Token:", token); // ตรวจสอบ token
-      console.error("Failed to fetch pets", err.response ? err.response.data : err.message);
       setError("Failed to fetch pets.");
     } finally {
-      setLoading(false);
+      const elapsed = Date.now() - startTime;
+      const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
+      setTimeout(() => setLoading(false), delay);
     }
   }, []);
 
@@ -37,7 +37,6 @@ const useContacts = () => {
       await postContact(newContact, token);
       fetchContacts();
     } catch (err) {
-      console.error("Failed to add contact:", err);
       setError("Failed to add contact.");
     }
   };
@@ -48,7 +47,6 @@ const useContacts = () => {
       await putContact(id, updatedData, token);
       fetchContacts();
     } catch (err) {
-      console.error("Failed to edit contact:", err);
       setError("Failed to edit contact.");
     }
   };
@@ -59,7 +57,6 @@ const useContacts = () => {
       await deleteContact(id, token);
       fetchContacts();
     } catch (err) {
-      console.error("Failed to delete contact:", err);
       setError("Failed to delete contact.");
     }
   };

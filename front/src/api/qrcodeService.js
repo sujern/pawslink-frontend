@@ -14,7 +14,6 @@ export async function getQRcode(profileUrl) {
 
     return URL.createObjectURL(response.data);
   } catch (err) {
-    console.error("Error fetching QR code:", err);
     return null;
   }
 }

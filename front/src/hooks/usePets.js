@@ -10,18 +10,18 @@ const usePets = () => {
 
     const fetchPets = useCallback(async () => {
         setLoading(true);
-        // console.log("Current Token:", token); // ตรวจสอบ token
+        const MIN_LOADING_TIME = 300;
+        const startTime = Date.now();
         try {
             const response = await getPets();
-            console.log("Response data:", response.data);
             setPets(response.data);
             setError(null);
         } catch (err) {
-            console.log("Current Token:", token); // ตรวจสอบ token
-            console.error("Failed to fetch pets", err.response ? err.response.data : err.message);
             setError("Failed to fetch pets.");
         } finally {
-            setLoading(false);
+            const elapsed = Date.now() - startTime;
+            const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
+            setTimeout(() => setLoading(false), delay);
         }
     }, []);
 
@@ -31,7 +31,6 @@ const usePets = () => {
             await deletePets(id);
             await fetchPets();
         } catch (err) {
-            console.error("Failed to delete pet:", err);
             setError("Failed to delete pet.");
         }
     }, [fetchPets]);

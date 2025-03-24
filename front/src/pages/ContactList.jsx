@@ -1,10 +1,13 @@
 import useContacts from "../hooks/useContacts";
 import ContactCard from "../components/ContactCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import ContactForm from "../components/ContactForm";
 import ConfirmationModal from "../components/ConfirmModal";
 import { useTranslation } from "react-i18next";
+import Loader from "../components/Loader";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const ContactList = () => {
   const {
@@ -20,6 +23,15 @@ const ContactList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingContact, setDeletingContact] = useState(null);
   const { t } = useTranslation();
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
 
   const handleAddContact = async (newContact) => {
     console.log("New Contact Added:", newContact);
@@ -56,7 +68,7 @@ const ContactList = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-gray-500 text-xl">{t("loadingContacts")}</p>
+        <Loader />
       </div>
     );
   }

@@ -9,10 +9,8 @@ export const saveScanRecord = async (petId, latitude, longitude) => {
         latitude,
         longitude,
       });
-      console.log("Scan record saved successfully:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error saving scan record:", error);
       throw error;
     }
 };
@@ -32,7 +30,6 @@ export async function getScanRecord() {
   
       return response.data;
     } catch (error) {
-      console.error("Error fetching scan records:", error);
       throw error;
     }
   }

@@ -23,7 +23,6 @@ const useLocationPermission = (petId) => {
         },
         (error) => {
           setLocationError("Cannot get location. Please allow location access.");
-          console.error("Error getting location:", error);
         }
       );
     } else {

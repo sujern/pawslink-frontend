@@ -3,7 +3,7 @@ const API_ROOT = `${import.meta.env.VITE_API_ROOT}/api/register`;
 
 
 export async function getContacts() {
-    const token = localStorage.getItem("access_token"); // ใช้ getItem แทน
+    const token = localStorage.getItem("access_token");
     if (token) {
         return await axios.get(API_ROOT, {
             headers: {
@@ -12,7 +12,6 @@ export async function getContacts() {
         });
 
     } else {
-        console.error("Error fetching pets:", err);
         return err;
     }
 }

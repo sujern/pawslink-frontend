@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// API URL root
 const API_URL = `${import.meta.env.VITE_API_ROOT}/api`;
 
 export const apiLogin = async (username, password) => {
@@ -21,15 +20,8 @@ export const apiGetUser = async () => {
             headers: { Authorization: `Bearer ${token}` },
         });
 
-        return response.data; // คืนค่าเป็นข้อมูลผู้ใช้
+        return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;
     }
 };
-
-
-// export const apiValidateToken = async (token) => {
-//     return await axios.get(`${API_URL}/validate-token`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//     });
-// };

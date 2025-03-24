@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 const ConfirmationModal = ({ 
     isOpen, 
@@ -7,8 +8,17 @@ const ConfirmationModal = ({
     onConfirm, 
     message = "Are you sure you want to proceed?" 
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const [isProcessing, setIsProcessing] = useState(false);
+
   if (!isOpen) return null;
+
+  const handleConfirm = async () => {
+    if (isProcessing) return;
+    setIsProcessing(true); 
+    await onConfirm();
+    setIsProcessing(false);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -18,14 +28,20 @@ const ConfirmationModal = ({
           <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+            disabled={isProcessing}
           >
             {t("cancel")}
           </button>
           <button
-            onClick={onConfirm}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            onClick={handleConfirm}
+            className={`px-4 py-2 rounded-lg ${
+              isProcessing
+                ? "bg-red-300 cursor-not-allowed"
+                : "bg-red-500 text-white hover:bg-red-600"
+            }`}
+            disabled={isProcessing}
           >
-            {t("confirm")}
+            {isProcessing ? t("processing") : t("confirm")}
           </button>
         </div>
       </div>

@@ -10,7 +10,7 @@ const QRCodeModal = ({ isOpen, qrCode, petName, onClose }) => {
     >
       <div
         className="bg-white p-8 rounded-lg shadow-lg z-60 w-[400px] max-w-full"
-        onClick={(e) => e.stopPropagation()} // ป้องกันการปิด Modal เมื่อคลิกภายใน
+        onClick={(e) => e.stopPropagation()}
       >
         <h3 className="text-xl font-semibold text-gray-700 mb-6 text-center">
           QR Code for {petName}
