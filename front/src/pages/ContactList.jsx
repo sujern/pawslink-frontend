@@ -34,7 +34,6 @@ const ContactList = () => {
 
 
   const handleAddContact = async (newContact) => {
-    console.log("New Contact Added:", newContact);
     await createContact(newContact);
     setIsModalOpen(false);
   };
