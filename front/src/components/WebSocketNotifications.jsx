@@ -13,38 +13,34 @@ const WebSocketNotifications = () => {
     if (notifications.length > 0) {
       const latestNotif = notifications[notifications.length - 1];
 
-      if (latestNotificationId.current === latestNotif.id) {
-        return;
+      if (!latestNotificationId.current || latestNotificationId.current !== latestNotif.scanId) {
+        console.log("New notification:", latestNotif);
+        latestNotificationId.current = latestNotif.scanId;
+
+         toast.info(
+          <div
+            onClick={() => {
+              toast.dismiss();
+              navigate(`/history`);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <span role="img" aria-label="alert">📢 </span>
+            <strong className="text-blue-600">{latestNotif.petName}</strong> was scanned at{" "}
+            <span className="text-gray-700">{latestNotif.address}</span>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            style: { fontSize: "16px", fontWeight: "500", color: "#333" },
+          }
+        );
       }
-      latestNotificationId.current = latestNotif.id;
-
-      toast.info(
-        <div
-          onClick={() => {
-            toast.dismiss();
-            navigate("/history");
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          <span role="img" aria-label="alert">📢 </span>
-          <strong className="text-blue-600">{latestNotif.petName}</strong> was scanned at{" "}
-          <span className="text-gray-700">{latestNotif.address}</span>
-        </div>,
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: { fontSize: "16px", fontWeight: "500", color: "#333" },
-        }
-      );
     }
-
-    return () => {
-      toast.dismiss();
-    };
   }, [notifications, navigate]);
 
   return null;

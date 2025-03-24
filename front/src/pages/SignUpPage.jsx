@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useSignUp from "../hooks/useSignUp";
 import { useNavigate } from "react-router-dom";
 import { PawPrint } from "lucide-react";
@@ -9,12 +9,37 @@ const SignUpPage = () => {
     useSignUp();
   const { token } = useAuth();
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     if (token) {
       navigate("/pets");
     }
   }, [token, navigate]);
+
+  const validatePassword = (password) => {
+    if (password.length < 12) {
+      return "Password must be at least 12 characters long.";
+    }
+    if (!/[A-Z]/.test(password)) {
+      return "Password must include at least one uppercase letter.";
+    }
+    if (!/[a-z]/.test(password)) {
+      return "Password must include at least one lowercase letter.";
+    }
+    if (!/[0-9]/.test(password)) {
+      return "Password must include at least one number.";
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return "Password must include at least one special character.";
+    }
+    return "";
+  };
+
+  const handlePasswordBlur = () => {
+    const error = validatePassword(formData.password);
+    setPasswordError(error);
+  };
 
   return (
     <div className="flex h-screen justify-center items-center bg-blue-50 p-6">
@@ -67,9 +92,13 @@ const SignUpPage = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onBlur={handlePasswordBlur}
               className="w-full p-3 border border-blue-300 rounded-lg mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50"
               required
             />
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-blue-500">
@@ -87,7 +116,7 @@ const SignUpPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-400 text-white p-3 rounded-lg mt-4 hover:bg-blue-500 disabled:bg-blue-300 transition-all"
-            disabled={loading}
+            disabled={loading || passwordError}
           >
             {loading ? "Signing Up..." : "🐶 Sign Up"}
           </button>

@@ -2,8 +2,12 @@ import { Pencil, Trash2 } from "lucide-react";
 import PropTypes from "prop-types";
 
 const ContactCard = ({ contact, onEdit, onDelete }) => {
-  const getContactLink = (value) => {
-    if (value.startsWith("http://") || value.startsWith("https://")) {
+  const getContactLink = (type, value) => {
+    if (type === "email") {
+      return `mailto:${value}`;
+    } else if (type === "line") {
+      return `https://line.me/ti/p/~${value}`;
+    } else if (value.startsWith("http://") || value.startsWith("https://")) {
       return value;
     } else if (/^\d+$/.test(value)) {
       return `tel:${value}`;
@@ -12,7 +16,7 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
     }
   };
 
-  const contactLink = getContactLink(contact.contactValue);
+  const contactLink = getContactLink(contact.contactType, contact.contactValue);
 
   return (
     <li className="bg-gray-100 rounded-xl shadow-md p-4 hover:bg-gray-50 transition relative group flex justify-between items-center">
@@ -24,7 +28,7 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
         {contactLink ? (
           <a
             href={contactLink}
-            target={contactLink.startsWith("tel:") ? "_self" : "_blank"}
+            target={contact.contactType === "email" || contact.contactType === "line" ? "_blank" : "_self"}
             rel="noopener noreferrer"
             className="text-blue-500 hover:underline"
           >
