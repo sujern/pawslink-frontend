@@ -60,8 +60,6 @@ const useSignUp = () => {
                 }
             );
 
-            console.log("User registered successfully:", response.data);
-
             if (response.status === 201 || response.status === 200) {
                 setSuccess(true);
             }

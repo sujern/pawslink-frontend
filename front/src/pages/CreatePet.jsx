@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createPet } from "../api/petService";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ConfirmationModal from "../components/ConfirmModal";
+import useAuth from "../hooks/useAuth";
 
 const CreatePet = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +24,13 @@ const CreatePet = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { token } = useAuth();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
 
   const handleChange = (e) => {
     const { name, type, value, files } = e.target;

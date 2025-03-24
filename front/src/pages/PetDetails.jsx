@@ -11,14 +11,14 @@ const PetDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated()) {
+    if (!token) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate]);
+  }, [token, navigate]);
 
   useEffect(() => {
     async function fetchPet() {

@@ -1,20 +1,37 @@
 import { useEffect, useState } from "react";
 import { getScanRecord } from "../api/recordService";
+import Loader from "../components/Loader";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const ScanRecordLog = () => {
   const [scanRecords, setScanRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
 
   useEffect(() => {
     async function fetchScanRecords() {
+      setLoading(true);
+      const MIN_LOADING_TIME = 300;
+      const startTime = Date.now();
       try {
         const data = await getScanRecord();
         setScanRecords(data);
       } catch (err) {
         setError("Failed to fetch scan records: " + err.message);
       } finally {
-        setLoading(false);
+        const elapsed = Date.now() - startTime;
+        const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
+        setTimeout(() => setLoading(false), delay);
       }
     }
 
@@ -22,7 +39,9 @@ const ScanRecordLog = () => {
   }, []);
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen text-gray-500">Loading scan records...</div>;
+    return <div className="flex justify-center items-center min-h-screen text-gray-500">
+      <Loader />
+    </div>;
   }
 
   if (error) {
