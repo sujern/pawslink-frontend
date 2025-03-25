@@ -15,7 +15,7 @@ export const saveScanRecord = async (petId, latitude, longitude) => {
     }
 };
 
-export async function getScanRecord() {
+export async function getScanRecord(page, size) {
     try {
       const token = localStorage.getItem("access_token");
       if (!token) {
@@ -25,6 +25,12 @@ export async function getScanRecord() {
       const response = await axios.get(`${API_ROOT}/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          page,
+          size,
+          sortBy: "scanId",
+          sortDirection: "asc",
         },
       });
   

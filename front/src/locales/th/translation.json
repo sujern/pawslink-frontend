@@ -18,7 +18,7 @@
   "url": "ลิงก์หรือเบอร์โทร",
   "egType": "เช่น Facebook หรือ Instragram",
   "egValue": "เช่น https://www.facebook.com/username",
-  "species": "สายพันธุ์",
+  "species": "ชนิด",
   "breed": "พันธุ์",
   "gender": "เพศ",
   "age": "อายุ",
@@ -51,5 +51,10 @@
   "requiredFieldImage": "กรุณาอัพโหลดรูปภาพ",
   "saveChanges": "บันทึกการเปลี่ยนแปลง",
   "areYouSure": "คุณแน่ใจหรือไม่ที่ต้องการบันทึกการเปลี่ยนแปลง?",
-  "confirmCreatePet": "คุณแน่ใจหรือไม่ที่ต้องการสร้างสัตว์เลี้ยงนี้?"
+  "confirmCreatePet": "คุณแน่ใจหรือไม่ที่ต้องการสร้างสัตว์เลี้ยงนี้?",
+  "history": "ประวัติ",
+  "enterName": "กรุณากรอกชื่อ",
+  "dog": "สุนัข",
+  "cat": "แมว",
+  "selectBreed": "เลือกพันธุ์"
 }

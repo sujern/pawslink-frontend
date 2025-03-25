@@ -64,14 +64,6 @@ const ContactList = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader />
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -98,7 +90,11 @@ const ContactList = () => {
         </button>
       </div>
 
-      {contacts && contacts.length > 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <Loader />
+        </div>
+      ) : contacts && contacts.length > 0 ? (
         <ul className="space-y-5 px-10">
           {contacts.map((contact) => (
             <ContactCard
