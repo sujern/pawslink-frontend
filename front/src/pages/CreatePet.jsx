@@ -8,7 +8,7 @@ import useAuth from "../hooks/useAuth";
 const CreatePet = () => {
   const [formData, setFormData] = useState({
     name: "",
-    species: "",
+    species: "Dog",
     breed: "",
     dateOfBirth: "",
     gender: "Male",
@@ -20,16 +20,37 @@ const CreatePet = () => {
 
   const [preview, setPreview] = useState(null);
   const [errors, setErrors] = useState({});
-  const [showModal, setShowModal] = useState(false); // ใช้สำหรับการเปิดปิด Confirmation Modal
+  const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { token } = useAuth();
 
+  const [breedOptions, setBreedOptions] = useState({
+    Dog: [],
+    Cat: [],
+  });
+
   useEffect(() => {
     if (!token) {
       navigate("/login");
     }
+
+    fetch("https://api.thedogapi.com/v1/breeds")
+      .then((res) => res.json())
+      .then((data) => {
+        const dogBreeds = data.map((breed) => breed.name);
+        setBreedOptions((prev) => ({ ...prev, Dog: dogBreeds }));
+      })
+      .catch((error) => console.error("Error fetching dog breeds:", error));
+
+    fetch("https://api.thecatapi.com/v1/breeds")
+      .then((res) => res.json())
+      .then((data) => {
+        const catBreeds = data.map((breed) => breed.name);
+        setBreedOptions((prev) => ({ ...prev, Cat: catBreeds }));
+      })
+      .catch((error) => console.error("Error fetching cat breeds:", error));
   }, [token, navigate]);
 
   const handleChange = (e) => {
@@ -48,6 +69,10 @@ const CreatePet = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
       setErrors((prev) => ({ ...prev, [name]: "" }));
+
+      if (name === "species") {
+        setFormData((prev) => ({ ...prev, breed: "" }));
+      }
     }
   };
 
@@ -64,13 +89,15 @@ const CreatePet = () => {
       }
     });
 
+    console.log("Validation errors:", newErrors);
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
     setErrors({});
-    setShowModal(true); // แสดง Confirmation Modal
+    setShowModal(true);
   };
 
   const confirmSubmit = async () => {
@@ -81,25 +108,27 @@ const CreatePet = () => {
       }
     });
 
+    console.log("FormData being sent:", [...formDataToSend.entries()]);
+
     try {
       await createPet(formDataToSend);
       navigate("/pets");
     } catch (error) {
+      console.error("Error creating pet:", error);
       setErrors({ submit: t("errorCreatingPet") });
     }
 
-    setShowModal(false); // ปิด Modal
+    setShowModal(false);
   };
 
   const cancelSubmit = () => {
-    setShowModal(false); // ปิด Modal
+    setShowModal(false);
   };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h1 className="text-2xl font-bold mb-6 text-center">{t("addPet")}</h1>
 
-      {/* ฟิลด์อัปโหลดรูปภาพ (ไม่บังคับ) */}
       <div className="flex flex-col items-center mb-6 relative">
         {preview ? (
           <img
@@ -143,51 +172,84 @@ const CreatePet = () => {
           <p className="text-red-500 text-sm text-center">{errors.submit}</p>
         )}
 
-        {[
-          {
-            label: "name",
-            type: "text",
-            isRequired: true,
-          },
-          {
-            label: "species",
-            type: "text",
-            isRequired: true,
-          },
-          {
-            label: "breed",
-            type: "text",
-            isRequired: true,
-          },
-          {
-            label: "dateOfBirth",
-            type: "date",
-            isRequired: true,
-          },
-        ].map(({ label, type, isRequired }) => (
-          <div key={label}>
-            <label className="block text-gray-700 font-medium mb-1">
-              {t(label)}:{isRequired && <span className="text-red-500">*</span>}{" "}
-              {/* สัญลักษณ์ * สำหรับฟิลด์ที่จำเป็น */}
-            </label>
-            <input
-              type={type}
-              name={label}
-              value={formData[label]}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 ${
-                errors[label] ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-            {errors[label] && (
-              <p className="text-red-500 text-sm">{errors[label]}</p>
-            )}
-          </div>
-        ))}
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("name")}:<span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 ${
+              errors.name ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder={t("enterName")}
+          />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+        </div>
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">
-            {t("gender")}:
+            {t("species")}:<span className="text-red-500">*</span>
+          </label>
+          <select
+            name="species"
+            value={formData.species}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+          >
+            <option value="Dog">{t("dog")}</option>
+            <option value="Cat">{t("cat")}</option>
+          </select>
+        </div>
+
+        {/* Breed Field */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("breed")}:<span className="text-red-500">*</span>
+          </label>
+          <select
+            name="breed"
+            value={formData.breed}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 ${
+              errors.breed ? "border-red-500" : "border-gray-300"
+            }`}
+          >
+            <option value="">{t("selectBreed")}</option>
+            {breedOptions[formData.species].map((breed) => (
+              <option key={breed} value={breed}>
+                {breed}
+              </option>
+            ))}
+          </select>
+          {errors.breed && (
+            <p className="text-red-500 text-sm">{errors.breed}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("dateOfBirth")}:<span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 ${
+              errors.dateOfBirth ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.dateOfBirth && (
+            <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("gender")}:<span className="text-red-500">*</span>
           </label>
           <select
             name="gender"
@@ -202,7 +264,7 @@ const CreatePet = () => {
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">
-            {t("status")}:
+            {t("status")}:<span className="text-red-500">*</span>
           </label>
           <select
             name="status"
@@ -240,7 +302,6 @@ const CreatePet = () => {
         </div>
       </form>
 
-      {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={showModal}
         onClose={cancelSubmit}

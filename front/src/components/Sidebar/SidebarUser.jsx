@@ -15,12 +15,13 @@ const UserProfile = () => {
         const userData = await apiGetUser();
         setUser(userData);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        logout();
+        navigate("/");
       }
     };
 
     fetchUser();
-  }, []);
+  }, [logout, navigate]);
 
   const handleLogout = () => {
     logout();

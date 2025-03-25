@@ -50,5 +50,7 @@
   "requiredField": "{{field}} is required",
   "saveChanges": "Save changes",
   "areYouSure": "Are you sure you want to save the changes?",
-  "confirmCreatePet": "Are you sure you want to create this pet?"
+  "confirmCreatePet": "Are you sure you want to create this pet?",
+  "history": "History",
+  "enterName": "Please enter a name"
 }

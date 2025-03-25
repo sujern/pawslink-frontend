@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 const links = [
   { to: "/pets", labelKey: "myPet", icon: PawPrint },
   { to: "/contact", labelKey: "myContact", icon: UserRound },
-  { to: "/history", labelKey: "History", icon: HistoryIcon },
+  { to: "/history", labelKey: "history", icon: HistoryIcon },
   { to: "/overview", labelKey: "overview", icon: ChartNoAxesGantt },
 ];
 
