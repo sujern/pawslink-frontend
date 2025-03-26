@@ -17,6 +17,12 @@ const SignUpPage = () => {
     }
   }, [token, navigate]);
 
+  useEffect(() => {
+    if (success) {
+        navigate("/login");
+    }
+  })
+
   const validatePassword = (password) => {
     if (password.length < 12) {
       return "Password must be at least 12 characters long.";
