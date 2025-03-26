@@ -4,13 +4,19 @@ const API_ROOT = import.meta.env.VITE_API_ROOT
   ? `${import.meta.env.VITE_API_ROOT}/api/pets`
   : "http://localhost:8080/api/pets";
 
-export async function getPets() {
+export async function getPets(page = 0, size = 5) {
 
   const token = localStorage.getItem("access_token");
   if (token) {
     return await axios.get(API_ROOT, {
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      params: {
+        page,
+        size,
+        sortBy: "name",
+        sortDirection: "asc",
       },
     });
 
