@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import ConfirmationModal from "../components/ConfirmModal";
 import Loader from "../components/Loader";
 import useAuth from "../hooks/useAuth";
-import { getPets } from "../api/petService"; // Import the API function
+import { getPets, deletePets } from "../api/petService";
 
 const PetProfileList = () => {
   const [pets, setPets] = useState([]);
@@ -34,9 +34,9 @@ const PetProfileList = () => {
     const MIN_LOADING_TIME = 300;
     const startTime = Date.now();
     try {
-      const response = await getPets(page, pagination.pageSize); // Fetch data from the API
-      const data = response.data; // Access the `data` property of the response
-      const petList = data._embedded?.petListDTOes || []; // Safely access petListDTOes
+      const response = await getPets(page, pagination.pageSize); 
+      const data = response.data;
+      const petList = data._embedded?.petListDTOes || [];
       setPets(petList);
 
       // Update pagination state
@@ -71,10 +71,10 @@ const PetProfileList = () => {
 
   const handleDeleteConfirm = async () => {
     if (deletingPet) {
-      await removePet(deletingPet.petId);
+      await deletePets(deletingPet.petId);
       setDeletingPet(null);
       setIsDeleteModalOpen(false);
-      fetchPets(pagination.currentPage); // Refresh the list after deletion
+      fetchPets(pagination.currentPage);
     }
   };
 
@@ -121,7 +121,7 @@ const PetProfileList = () => {
         <div className="space-y-5 px-8">
           {pets.map((pet) => (
             <PetCard
-              key={pet.petId} // Use petId as the unique key
+              key={pet.petId}
               pet={pet}
               onEdit={handleEdit}
               onDelete={() => handleDeleteClick(pet)}

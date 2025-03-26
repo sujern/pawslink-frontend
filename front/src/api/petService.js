@@ -15,8 +15,8 @@ export async function getPets(page = 0, size = 5) {
       params: {
         page,
         size,
-        sortBy: "name",
-        sortDirection: "asc",
+        sortBy: "createdAt",
+        sortDirection: "desc",
       },
     });
 
