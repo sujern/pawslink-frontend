@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useSignUp from "../hooks/useSignUp";
 import { useNavigate } from "react-router-dom";
-import { PawPrint } from "lucide-react";
+import { PawPrint, CheckCircle, XCircle } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 
 const SignUpPage = () => {
@@ -9,7 +9,7 @@ const SignUpPage = () => {
     useSignUp();
   const { token } = useAuth();
   const navigate = useNavigate();
-  const [passwordError, setPasswordError] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState([]);
 
   useEffect(() => {
     if (token) {
@@ -19,32 +19,40 @@ const SignUpPage = () => {
 
   useEffect(() => {
     if (success) {
-        navigate("/login");
+      navigate("/login");
     }
-  })
+  }, [success, navigate]);
 
   const validatePassword = (password) => {
-    if (password.length < 12) {
-      return "Password must be at least 12 characters long.";
-    }
-    if (!/[A-Z]/.test(password)) {
-      return "Password must include at least one uppercase letter.";
-    }
-    if (!/[a-z]/.test(password)) {
-      return "Password must include at least one lowercase letter.";
-    }
-    if (!/[0-9]/.test(password)) {
-      return "Password must include at least one number.";
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      return "Password must include at least one special character.";
-    }
-    return "";
+    const validations = [
+      {
+        message: "Password must be at least 12 characters long.",
+        isValid: password.length >= 12,
+      },
+      {
+        message: "Password must include at least one uppercase letter.",
+        isValid: /[A-Z]/.test(password),
+      },
+      {
+        message: "Password must include at least one lowercase letter.",
+        isValid: /[a-z]/.test(password),
+      },
+      {
+        message: "Password must include at least one number.",
+        isValid: /[0-9]/.test(password),
+      },
+      {
+        message: "Password must include at least one special character.",
+        isValid: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      },
+    ];
+    return validations;
   };
 
-  const handlePasswordBlur = () => {
-    const error = validatePassword(formData.password);
-    setPasswordError(error);
+  const handlePasswordChange = (e) => {
+    handleChange(e);
+    const results = validatePassword(e.target.value);
+    setPasswordValidation(results);
   };
 
   return (
@@ -97,14 +105,27 @@ const SignUpPage = () => {
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
-              onBlur={handlePasswordBlur}
+              onChange={handlePasswordChange}
               className="w-full p-3 border border-blue-300 rounded-lg mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50"
               required
             />
-            {passwordError && (
-              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-            )}
+            <ul className="mt-2 space-y-1">
+              {passwordValidation.map((validation, index) => (
+                <li
+                  key={index}
+                  className={`flex items-center text-sm ${
+                    validation.isValid ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {validation.isValid ? (
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                  ) : (
+                    <XCircle className="w-4 h-4 mr-2" />
+                  )}
+                  {validation.message}
+                </li>
+              ))}
+            </ul>
           </div>
           <div>
             <label className="block text-sm font-medium text-blue-500">
@@ -122,7 +143,7 @@ const SignUpPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-400 text-white p-3 rounded-lg mt-4 hover:bg-blue-500 disabled:bg-blue-300 transition-all"
-            disabled={loading || passwordError}
+            disabled={loading || passwordValidation.some((v) => !v.isValid)}
           >
             {loading ? "Signing Up..." : "🐶 Sign Up"}
           </button>
