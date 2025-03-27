@@ -1,25 +1,36 @@
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Loader2, PawPrint } from "lucide-react";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, loading, error, token } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (token) {
+    // Check for OAuth2 redirect with tokens
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
+
+    if (accessToken && refreshToken) {
+      // Store tokens (you might want to use your auth context here)
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+      navigate("/pets");
+    } else if (token) {
       navigate("/pets");
     }
-  }, [token, navigate]);
+  }, [token, navigate, location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(username, password);
-      navigate("/pets");
     } catch (err) {
       console.log(err);
     }
@@ -31,16 +42,23 @@ const Login = () => {
         <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-300 w-12 h-12 flex items-center justify-center rounded-full shadow-md">
           <PawPrint className="text-white w-6 h-6" />
         </div>
-        <h2 className="text-3xl font-semibold text-center  text-blue-600 mt-6 mb-6">
+        <h2 className="text-3xl font-semibold text-center text-blue-600 mt-6 mb-6">
           🐾 Welcome Back!
         </h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        
+        {/* Add Google Login Button */}
+        <GoogleLoginButton />
+        
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="mx-4 text-gray-500">or</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+        </div>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-blue-500"
-            >
+            <label htmlFor="username" className="block text-sm font-medium text-blue-500">
               Username
             </label>
             <input
@@ -53,10 +71,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-blue-500"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-blue-500">
               Password
             </label>
             <input
@@ -80,7 +95,7 @@ const Login = () => {
           Don't have an account?
           <button
             onClick={() => navigate("/register")}
-            className="text-yellow-500 font-semibold  hover:underline ml-1"
+            className="text-yellow-500 font-semibold hover:underline ml-1"
           >
             Sign up
           </button>

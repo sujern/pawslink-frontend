@@ -39,7 +39,7 @@ const UserProfile = () => {
             {user ? user.email : ""}
           </span>
         </div>
-        <LogOut size={20} className="cursor-pointer" onClick={handleLogout} />
+        <LogOut size={20} className="cursor-pointer text-red-500" onClick={handleLogout} />
       </div>
     </div>
   );
