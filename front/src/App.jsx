@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import Layout from "./components/Layout";
 import PetProfileList from "./pages/PetProfileList";
 import ScanRecordLog from "./pages/ScanRecordLog";
@@ -11,6 +16,7 @@ import CreatePet from "./pages/CreatePet";
 import HomePage from "./pages/Home";
 import Login from "./pages/Login";
 import SignUpPage from "./pages/SignUpPage";
+import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
 import { ToastContainer } from "react-toastify";
 
@@ -26,7 +32,7 @@ function App() {
           <Route path="/pets" element={<PetProfileList />} />
           <Route path="/contact" element={<ContactList />} />
           <Route path="/history" element={<ScanRecordLog />} />
-          <Route path="/overview" element={<Overview />} />
+          <Route path="/overview" element={<Dashboard />} />
           <Route path="/pets/:petId" element={<PetDetails />} />
           <Route path="/pets/:petId/edit" element={<EditPet />} />
           <Route path="/create" element={<CreatePet />} />
@@ -42,7 +48,9 @@ const ConditionalWebSocket = () => {
   const location = useLocation();
   const excludedPaths = ["/login", "/register"];
 
-  const isExcluded = excludedPaths.includes(location.pathname) || location.pathname.startsWith("/public/");
+  const isExcluded =
+    excludedPaths.includes(location.pathname) ||
+    location.pathname.startsWith("/public/");
 
   return !isExcluded ? <WebSocketNotifications /> : null;
 };
