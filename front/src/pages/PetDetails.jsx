@@ -26,70 +26,88 @@ const PetDetails = () => {
         const response = await getPetById(petId);
         setPet(response.data);
       } catch {
-        setError("Failed to load pet details!");
+        setError(t("failedToLoadPetDetails"));
       } finally {
         setLoading(false);
       }
     }
     fetchPet();
-  }, [petId]);
+  }, [petId, t]);
 
   if (loading) {
-    return <p>{t("loadPet")}</p>;
+    return <p className="text-center text-gray-500">{t("loadPet")}</p>;
   }
 
   if (error) {
-    return <p className="text-red-500">{error}</p>;
+    return <p className="text-center text-red-500">{error}</p>;
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="relative">
-        <div className="relative">
-          <Link
-            to={`/pets/${petId}/edit`}
-            className="absolute top-0 right-0 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">{pet.name}</h1>
+        <Link
+          to={`/pets/${petId}/edit`}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition"
+        >
+          {t("editPet")}
+        </Link>
+      </div>
+
+      {/* Pet Image and Status */}
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+        <img
+          src={pet.imageUrl || "https://via.placeholder.com/200"}
+          alt={pet.name || "Unknown Pet"}
+          className="w-40 h-40 object-cover rounded-full border border-gray-300 shadow-md"
+        />
+        <div className="flex-1">
+          <p
+            className={`inline-block px-4 py-2 rounded-full text-sm ${
+              pet.status === "NORMAL"
+                ? "bg-green-100 text-green-600"
+                : pet.status === "LOST"
+                ? "bg-yellow-100 text-yellow-600"
+                : "bg-gray-100 text-gray-600"
+            }`}
           >
-            {t("editPet")}
-          </Link>
+            {pet.status || t("unknownStatus")}
+          </p>
+          {pet.bio && (
+            <p className="mt-4 text-gray-600 text-sm">{pet.bio}</p>
+          )}
         </div>
       </div>
 
-      <img
-        src={pet.imageUrl || "https://via.placeholder.com/200"}
-        alt={pet.name || "Unknown Pet"}
-        className="w-40 h-40 rounded-full mx-auto object-cover mb-6"
-      />
-      <p className="text-center text-gray-500 mb-6">{pet.bio}</p>
-      <div className="border border-gray-300 bg-transparent p-6 rounded-md">
-        <h2 className="text-2xl font-bold text-center mt-4 text-gray-800">
-          {pet.name}
-        </h2>
-        <p className="text-center text-gray-500">
-          {pet.breed || "Unknown Breed"}
-        </p>
-        <p className="text-center text-gray-500">
-          <span className="font-bold p-2"> {t("gender")} : </span>
-          {pet.gender.toLowerCase() || "Unknown gender"} |{" "}
-          <span className="font-bold p-2"> {t("species")} : </span>
-          {pet.species.toLowerCase() || "Unknown species"}
-        </p>
-        <p className="text-center text-gray-500">
-          {pet.dateOfBirth || "Unknow dateOfBirth"}
-        </p>
-        <p className="text-center mt-4">
-          <span
-            className={`inline-block px-4 py-2 rounded-full text-sm ${
-              pet.status === "NORMAL"
-                ? "bg-green-500/20 text-green-600"
-                : pet.status === "LOST"
-                ? "bg-yellow-500/20 text-yellow-600"
-                : "bg-gray-500/20 text-gray-600"
-            }`}
-          >
-            {pet.status || "Unknown Status"}
-          </span>
-        </p>
+      {/* Pet Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div className="p-4 border rounded-lg bg-gray-50">
+          <h3 className="text-sm font-medium text-gray-500">{t("species")}</h3>
+          <p className="text-lg font-semibold text-gray-800">
+            {pet.species || t("unknownSpecies")}
+          </p>
+        </div>
+        <div className="p-4 border rounded-lg bg-gray-50">
+          <h3 className="text-sm font-medium text-gray-500">{t("breed")}</h3>
+          <p className="text-lg font-semibold text-gray-800">
+            {pet.breed || t("unknownBreed")}
+          </p>
+        </div>
+        <div className="p-4 border rounded-lg bg-gray-50">
+          <h3 className="text-sm font-medium text-gray-500">{t("gender")}</h3>
+          <p className="text-lg font-semibold text-gray-800">
+            {pet.gender || t("unknownGender")}
+          </p>
+        </div>
+        <div className="p-4 border rounded-lg bg-gray-50">
+          <h3 className="text-sm font-medium text-gray-500">
+            {t("dateOfBirth")}
+          </h3>
+          <p className="text-lg font-semibold text-gray-800">
+            {pet.dateOfBirth || t("unknownDateOfBirth")}
+          </p>
+        </div>
       </div>
     </div>
   );

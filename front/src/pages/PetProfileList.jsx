@@ -34,7 +34,7 @@ const PetProfileList = () => {
     const MIN_LOADING_TIME = 300;
     const startTime = Date.now();
     try {
-      const response = await getPets(page, pagination.pageSize); 
+      const response = await getPets(page, pagination.pageSize);
       const data = response.data;
       const petList = data._embedded?.petListDTOes || [];
       setPets(petList);
@@ -91,7 +91,8 @@ const PetProfileList = () => {
     <div className="min-h-screen pt-8">
       <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-6 px-8">
         <h1 className="text-2xl text-gray-800">
-          {t("allPets")} {pagination.totalElements > 0 ? `(${pagination.totalElements})` : ""}
+          {t("allPets")}{" "}
+          {pagination.totalElements > 0 ? `(${pagination.totalElements})` : ""}
         </h1>
         <button
           className="bg-goodBlue text-white px-7 py-3 rounded-full shadow-md hover:bg-blue-700"
@@ -115,7 +116,7 @@ const PetProfileList = () => {
         </div>
       ) : pets.length === 0 && !error ? (
         <div className="flex justify-center items-center min-h-[50vh]">
-          <div className="text-xl text-center font-semibold">{t("noPet")}</div>
+          <div className="text-xl text-center text-gray-500">{t("noPet")}</div>
         </div>
       ) : (
         <div className="space-y-5 px-8">
@@ -138,31 +139,35 @@ const PetProfileList = () => {
       )}
 
       <div className="flex justify-between items-center mt-8 px-8">
-        <button
-          onClick={() => fetchPets(pagination.currentPage - 1)}
-          disabled={pagination.currentPage === 0}
-          className={`px-4 py-2 rounded-full ${
-            pagination.currentPage === 0
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-goodBlue text-white hover:bg-blue-600"
-          }`}
-        >
-          Previous
-        </button>
-        <span>
-          page {pagination.currentPage + 1} of {pagination.totalPages}
-        </span>
-        <button
-          onClick={() => fetchPets(pagination.currentPage + 1)}
-          disabled={pagination.currentPage + 1 === pagination.totalPages}
-          className={`px-4 py-2 rounded-full ${
-            pagination.currentPage + 1 === pagination.totalPages
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-goodBlue text-white hover:bg-blue-600"
-          }`}
-        >
-          Next
-        </button>
+        {pagination.totalElements > pagination.pageSize && (
+          <>
+            <button
+              onClick={() => fetchPets(pagination.currentPage - 1)}
+              disabled={pagination.currentPage === 0}
+              className={`px-4 py-2 rounded-full ${
+                pagination.currentPage === 0
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-goodBlue text-white hover:bg-blue-600"
+              }`}
+            >
+              Previous
+            </button>
+            <span>
+              page {pagination.currentPage + 1} of {pagination.totalPages}
+            </span>
+            <button
+              onClick={() => fetchPets(pagination.currentPage + 1)}
+              disabled={pagination.currentPage + 1 === pagination.totalPages}
+              className={`px-4 py-2 rounded-full ${
+                pagination.currentPage + 1 === pagination.totalPages
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-goodBlue text-white hover:bg-blue-600"
+              }`}
+            >
+              Next
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

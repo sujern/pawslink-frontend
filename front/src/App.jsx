@@ -19,6 +19,7 @@ import SignUpPage from "./pages/SignUpPage";
 import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
 import { ToastContainer } from "react-toastify";
+import OAuthRedirect from "./pages/OAuthRedirect";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         </Route>
         <Route path="/public/:profileUrl" element={<PublicPetProfile />} />
         <Route path="/register" element={<SignUpPage />} />
+        <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
       </Routes>
     </Router>
   );

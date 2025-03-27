@@ -106,8 +106,8 @@ const ContactList = () => {
           ))}
         </ul>
       ) : (
-        <div className="flex justify-center items-center mt-20">
-          <p className="text-gray-500 text-xl">{t("noContactsAvailable")}</p>
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <div className="text-xl text-center text-gray-500">{t("noContactsAvailable")}</div>
         </div>
       )}
 

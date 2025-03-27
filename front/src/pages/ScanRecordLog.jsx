@@ -13,6 +13,7 @@ const ScanRecordLog = () => {
     currentPage: 0,
     totalPages: 0,
     pageSize: 8,
+    totalElements: 0,
   });
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -30,14 +31,18 @@ const ScanRecordLog = () => {
     const startTime = Date.now();
     try {
       const data = await getScanRecord(page, pagination.pageSize);
-      setScanRecords(data._embedded.scanRecordResponses || []);
+      const scanRecords = data._embedded?.scanRecordResponses || []; // Default to an empty array if undefined
+      setScanRecords(scanRecords);
+  
       setPagination({
-        currentPage: data.page.number,
-        totalPages: data.page.totalPages,
-        pageSize: data.page.size,
+        currentPage: data.page?.number || 0,
+        totalPages: data.page?.totalPages || 0,
+        pageSize: data.page?.size || 8,
+        totalElements: data.page?.totalElements || 0,
       });
     } catch (err) {
-      setError("Failed to fetch scan records: " + err.message);
+      console.error("Failed to fetch scan records:", err);
+      setScanRecords([]); // Set an empty array to show the empty state
     } finally {
       const elapsed = Date.now() - startTime;
       const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
@@ -66,7 +71,10 @@ const ScanRecordLog = () => {
   return (
     <div className="min-h-screen pt-12">
       <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-6 px-8">
-        <h1 className="text-2xl text-gray-800">{t("history")}</h1>
+        <h1 className="text-2xl text-gray-800">
+          {t("history")}{" "}
+          {pagination.totalElements > 0 ? `(${pagination.totalElements})` : ""}
+        </h1>
       </div>
 
       <div className="mx-auto bg-white p-4 rounded-lg">
@@ -91,8 +99,8 @@ const ScanRecordLog = () => {
               </tr>
             ) : scanRecords.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center text-gray-500">
-                  No scan records found.
+                <td colSpan="5" className="text-center text-gray-500 pt-20 text-xl">
+                  {t("noRecords")}
                 </td>
               </tr>
             ) : (
@@ -129,32 +137,36 @@ const ScanRecordLog = () => {
           </tbody>
         </table>
 
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={() => handlePageChange(pagination.currentPage - 1)}
-            disabled={pagination.currentPage === 0}
-            className={`px-4 py-2 rounded-lg ${
-              pagination.currentPage === 0
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
-          >
-            Previous
-          </button>
-          <span>
-            page {pagination.currentPage + 1} of {pagination.totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(pagination.currentPage + 1)}
-            disabled={pagination.currentPage + 1 === pagination.totalPages}
-            className={`px-4 py-2 rounded-lg ${
-              pagination.currentPage + 1 === pagination.totalPages
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
-          >
-            Next
-          </button>
+        <div className="flex justify-between items-center mt-8 px-8">
+          {pagination.totalElements > pagination.pageSize && (
+            <>
+              <button
+                onClick={() => fetchPets(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 0}
+                className={`px-4 py-2 rounded-full ${
+                  pagination.currentPage === 0
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-goodBlue text-white hover:bg-blue-600"
+                }`}
+              >
+                Previous
+              </button>
+              <span>
+                page {pagination.currentPage + 1} of {pagination.totalPages}
+              </span>
+              <button
+                onClick={() => fetchPets(pagination.currentPage + 1)}
+                disabled={pagination.currentPage + 1 === pagination.totalPages}
+                className={`px-4 py-2 rounded-full ${
+                  pagination.currentPage + 1 === pagination.totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-goodBlue text-white hover:bg-blue-600"
+                }`}
+              >
+                Next
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

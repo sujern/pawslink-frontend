@@ -8,7 +8,6 @@ const PublicPetProfile = () => {
   const { pet, loading, error } = usePublicPet(profileUrl);
   const { t } = useTranslation();
 
-  // เรียก Hook ขอสิทธิ์ตำแหน่งและบันทึกข้อมูล (ถ้ามี petId)
   const { locationError } = useLocationPermission(pet?.petId);
 
   const getStatusStyles = (status) =>
@@ -16,6 +15,20 @@ const PublicPetProfile = () => {
 
   const getDotStyles = (status) =>
     status === "NORMAL" ? "bg-green-500" : "bg-red-500";
+
+  const getContactLink = (type, value) => {
+    if (type === "email") {
+      return `mailto:${value}`;
+    } else if (type === "line") {
+      return `https://line.me/ti/p/~${value}`;
+    } else if (value.startsWith("http://") || value.startsWith("https://")) {
+      return value;
+    } else if (/^\d+$/.test(value)) {
+      return `tel:${value}`;
+    } else {
+      return null;
+    }
+  };
 
   if (loading) {
     return (
@@ -84,21 +97,27 @@ const PublicPetProfile = () => {
 
       {pet.status !== "NORMAL" && pet.contacts.length > 0 && (
           <div className="mt-6 w-full max-w-md space-y-4">
-            {pet.contacts.map((contact) => (
+            {pet.contacts.map((contact) => {
+              const link = getContactLink(contact.contactType, contact.contactValue);
+              return link ? (
                 <a
                     key={contact.contactId}
-                    href={
-                      contact.contactValue.startsWith("http")
-                          ? contact.contactValue
-                          : `tel:${contact.contactValue}`
-                    }
+                    href={link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block w-full text-center py-3 px-6 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition bg-blue-500 hover:bg-blue-600"
                 >
                   {contact.contactType.toUpperCase()}
                 </a>
-            ))}
+              ) : (
+                <div
+                    key={contact.contactId}
+                    className="block w-full text-center py-3 px-6 rounded-full text-gray-500 font-semibold shadow-lg bg-gray-200 cursor-not-allowed"
+                >
+                  {contact.contactType.toUpperCase()}
+                </div>
+              );
+            })}
           </div>
       )}
       

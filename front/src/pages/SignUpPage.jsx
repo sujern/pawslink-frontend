@@ -26,23 +26,23 @@ const SignUpPage = () => {
   const validatePassword = (password) => {
     const validations = [
       {
-        message: "Password must be at least 12 characters long.",
+        message: "At least 12 characters long",
         isValid: password.length >= 12,
       },
       {
-        message: "Password must include at least one uppercase letter.",
+        message: "At least one uppercase letter",
         isValid: /[A-Z]/.test(password),
       },
       {
-        message: "Password must include at least one lowercase letter.",
+        message: "At least one lowercase letter",
         isValid: /[a-z]/.test(password),
       },
       {
-        message: "Password must include at least one number.",
+        message: "At least one number",
         isValid: /[0-9]/.test(password),
       },
       {
-        message: "Password must include at least one special character.",
+        message: "At least one special character",
         isValid: /[!@#$%^&*(),.?":{}|<>]/.test(password),
       },
     ];
@@ -114,7 +114,7 @@ const SignUpPage = () => {
                 <li
                   key={index}
                   className={`flex items-center text-sm ${
-                    validation.isValid ? "text-green-500" : "text-red-500"
+                    validation.isValid ? "text-green-500" : "text-gray-500"
                   }`}
                 >
                   {validation.isValid ? (

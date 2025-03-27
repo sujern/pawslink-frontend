@@ -42,7 +42,7 @@
   "confirmEdit": "Are you sure you want to save the changes?",
   "createPet": "Create Pet",
   "allPets": "All Pets",
-  "noContactsAvailable": "No contacts available.",
+  "noContactsAvailable": "No contacts available",
   "fileTooLarge": "File size exceeds 8MB",
   "requiredFieldsMissing": "Please fill in all required fields",
   "errorCreatingPet": "An error occurred while creating the pet",
@@ -52,5 +52,7 @@
   "areYouSure": "Are you sure you want to save the changes?",
   "confirmCreatePet": "Are you sure you want to create this pet?",
   "history": "History",
-  "enterName": "Please enter a name"
+  "enterName": "Please enter a name",
+  "noRecords": "No records available",
+  "selectBreed": "Select Breed"
 }
