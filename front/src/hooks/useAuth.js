@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { apiGetUser } from "../api/auth";
 
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(
-    localStorage.getItem("access_token") || ""
-  );
+  const [token, setToken] = useState(localStorage.getItem("access_token") || "");
   const navigate = useNavigate();
+
   const isAuthenticated = () => !!token;
 
   const login = async (username, password) => {
@@ -54,17 +54,31 @@ const useAuth = () => {
     setUser(null);
   };
 
-  // In your useAuth hook or auth context
   const handleOAuthLogin = (accessToken, refreshToken) => {
-    // Store tokens
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
-    // Update auth state
     setToken(accessToken);
     setLoading(false);
   };
 
-  return { login, loading, error, logout, token, isAuthenticated, handleOAuthLogin };
+  // Fetch user info only when authenticated and user data is missing
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!token || user) return;
+
+      try {
+        const userData = await apiGetUser();
+        setUser(userData);
+      } catch (error) {
+        logout();
+        navigate("/");
+      }
+    };
+
+    fetchUser();
+  }, [token, user, logout, navigate]);
+
+  return { login, loading, error, logout, token, user, isAuthenticated, handleOAuthLogin };
 };
 
 export default useAuth;

@@ -30,6 +30,40 @@ const PublicPetProfile = () => {
     }
   };
 
+  const calculateAge = (dateOfBirth) => {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+
+    const years = today.getFullYear() - birthDate.getFullYear();
+    const months = today.getMonth() - birthDate.getMonth();
+    const days = today.getDate() - birthDate.getDate();
+
+    let adjustedYears = years;
+    let adjustedMonths = months;
+    let adjustedDays = days;
+
+    if (adjustedDays < 0) {
+      adjustedMonths -= 1;
+      const previousMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      adjustedDays += previousMonth.getDate();
+    }
+
+    if (adjustedMonths < 0) {
+      adjustedYears -= 1;
+      adjustedMonths += 12;
+    }
+
+    if (adjustedYears > 0) {
+      return `${adjustedYears} ${adjustedYears === 1 ? t("year") : t("years")}`;
+    } else if (adjustedMonths > 0) {
+      return `${adjustedMonths} ${adjustedMonths === 1 ? t("month") : t("months")} ${
+        adjustedDays > 0 ? `${adjustedDays} ${adjustedDays === 1 ? t("day") : t("days")}` : ""
+      }`;
+    } else {
+      return `${adjustedDays} ${adjustedDays === 1 ? t("day") : t("days")}`;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -89,8 +123,7 @@ const PublicPetProfile = () => {
         <div className="text-center">
           <h3 className="text-sm font-medium text-gray-500">{t("age")}</h3>
           <p className="text-lg font-semibold text-gray-800">
-            {new Date().getFullYear() - new Date(pet.dateOfBirth).getFullYear()}{" "}
-            years
+            {calculateAge(pet.dateOfBirth)}
           </p>
         </div>
       </div>

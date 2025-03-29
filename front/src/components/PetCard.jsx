@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Globe, Pencil, Trash2, ScanQrCode } from "lucide-react";
+import { Globe, Pencil, Trash2, ScanQrCode, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { getQRcode } from "../api/qrcodeService";
 import QRCodeModal from "./QRCodeModal";
 
-const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile }) => {
+const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile, onFound }) => {
   const [qrCode, setQrCode] = useState(null);
   const [showQRModal, setShowQRModal] = useState(false);
 
@@ -40,7 +40,23 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile }) => {
         </div>
       </Link>
 
-      <div className="absolute top-1/2 -translate-y-1/2 right-4 flex space-x-2">
+      <div className="absolute top-1/2 -translate-y-1/2 right-4 flex space-x-2 items-center gap-4">
+        {pet.status === "LOST" && (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onFound(pet.petId);
+              }}
+              className="flex justify-center items-center bg-white hover:bg-gray-300 text-green-600 w-10 h-10 rounded-full shadow-md transition"
+              title="Mark as Found"
+            >
+              <CheckCircle className="w-5 h-5" />
+            </button>
+
+            <div className="h-10 w-px bg-gray-300 mx-4"></div>
+          </>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation();

@@ -83,7 +83,6 @@ const ScanRecordLog = () => {
             <tr className="bg-goodBlue text-white rounded-t-lg">
               <th className="p-3 text-left rounded-tl-lg">Pet</th>
               <th className="p-3 text-left">Image</th>
-              <th className="p-3 text-left">Location</th>
               <th className="p-3 text-left">Address</th>
               <th className="p-3 text-left rounded-tr-lg">Scanned At</th>
             </tr>
@@ -91,7 +90,7 @@ const ScanRecordLog = () => {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="5" className="py-6">
+                <td colSpan="4" className="py-6">
                   <div className="flex justify-center items-center">
                     <Loader />
                   </div>
@@ -99,33 +98,30 @@ const ScanRecordLog = () => {
               </tr>
             ) : scanRecords.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center text-gray-500 pt-20 text-xl">
+                <td colSpan="4" className="text-center text-gray-500 pt-20 text-xl">
                   {t("noRecords")}
                 </td>
               </tr>
             ) : (
               scanRecords.map((record) => (
-                <tr key={record.scanId} className="border-b">
+                <tr
+                  key={record.scanId}
+                  className="border-b cursor-pointer hover:bg-gray-100"
+                  onClick={() =>
+                    window.open(
+                      `https://www.google.com/maps/search/?api=1&query=${record.latitude},${record.longitude}`,
+                      "_blank",
+                      "noopener noreferrer"
+                    )
+                  }
+                >
                   <td className="p-3">{record.petName}</td>
                   <td className="p-3">
                     <img
-                      src={
-                        record.petImageUrl || "https://via.placeholder.com/50"
-                      }
+                      src={record.petImageUrl || "https://via.placeholder.com/50"}
                       alt={record.petName}
                       className="w-12 h-12 rounded-full border border-gray-300 object-cover shadow-sm"
                     />
-                  </td>
-                  <td className="p-3">
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${record.latitude},${record.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      {record.latitude.toFixed(6)},{" "}
-                      {record.longitude.toFixed(6)}
-                    </a>
                   </td>
                   <td className="p-3">{record.address || "N/A"}</td>
                   <td className="p-3">
@@ -141,7 +137,7 @@ const ScanRecordLog = () => {
           {pagination.totalElements > pagination.pageSize && (
             <>
               <button
-                onClick={() => fetchPets(pagination.currentPage - 1)}
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
                 disabled={pagination.currentPage === 0}
                 className={`px-4 py-2 rounded-full ${
                   pagination.currentPage === 0
@@ -155,7 +151,7 @@ const ScanRecordLog = () => {
                 page {pagination.currentPage + 1} of {pagination.totalPages}
               </span>
               <button
-                onClick={() => fetchPets(pagination.currentPage + 1)}
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
                 disabled={pagination.currentPage + 1 === pagination.totalPages}
                 className={`px-4 py-2 rounded-full ${
                   pagination.currentPage + 1 === pagination.totalPages
