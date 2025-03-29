@@ -1,27 +1,10 @@
-import { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { apiGetUser } from "../../api/auth";
 
 const UserProfile = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await apiGetUser();
-        setUser(userData);
-      } catch (error) {
-        logout();
-        navigate("/");
-      }
-    };
-
-    fetchUser();
-  }, [logout, navigate]);
 
   const handleLogout = () => {
     logout();

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import ConfirmationModal from "../components/ConfirmModal";
 import Loader from "../components/Loader";
 import useAuth from "../hooks/useAuth";
-import { getPets, deletePets } from "../api/petService";
+import { getPets, deletePets, putPet } from "../api/petService";
 
 const PetProfileList = () => {
   const [pets, setPets] = useState([]);
@@ -87,6 +87,16 @@ const PetProfileList = () => {
     }
   };
 
+  const handleFoundPet = async (petId) => {
+    try {
+      const updatedPet = { status: "NORMAL" }; // Update status to NORMAL
+      await putPet(petId, updatedPet); // Assuming `editPet` is an API function to update the pet
+      fetchPets(pagination.currentPage); // Refresh the list
+    } catch (error) {
+      console.error("Failed to update pet status:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen pt-8">
       <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-6 px-8">
@@ -127,6 +137,7 @@ const PetProfileList = () => {
               onEdit={handleEdit}
               onDelete={() => handleDeleteClick(pet)}
               onOpenPublicProfile={handleOpenPublicProfile}
+              onFound={() => handleFoundPet(pet.petId)}
             />
           ))}
           <ConfirmationModal
