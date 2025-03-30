@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getPetById, putPet } from "../api/petService.js";
 import { useTranslation } from "react-i18next";
-import ConfirmationModal from "../components/ConfirmModal.jsx"; // เพิ่ม import modal
+import ConfirmationModal from "../components/ConfirmModal.jsx";
 import useAuth from "../hooks/useAuth.js";
 
 const EditPet = () => {
@@ -25,15 +25,13 @@ const EditPet = () => {
   const [preview, setPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
-  const [showConfirmation, setShowConfirmation] = useState(false); // ใช้ในการควบคุมการแสดง modal
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const { token } = useAuth();
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, [token, navigate]);
-
+  const [breedOptions, setBreedOptions] = useState({
+    Dog: [],
+    Cat: [],
+  });
 
   // Fetch pet details to prefill the form
   useEffect(() => {
@@ -47,7 +45,7 @@ const EditPet = () => {
           dateOfBirth: petData.dateOfBirth || "",
           gender: petData.gender || "MALE",
           imageUrl: petData.imageUrl || "",
-          status: petData.status || "NORMAL",
+          status: petData.status || "NORMAL", // ใช้ค่า status เดิมที่มีในข้อมูล
           bio: petData.bio || "",
           profileUrl: petData.profileUrl || "",
           file: null,
@@ -62,6 +60,27 @@ const EditPet = () => {
 
     fetchPet();
   }, [petId]);
+
+  // Fetch breed options for Dog and Cat
+  useEffect(() => {
+    if (formData.species === "Dog") {
+      fetch("https://api.thedogapi.com/v1/breeds")
+        .then((res) => res.json())
+        .then((data) => {
+          const dogBreeds = data.map((breed) => breed.name);
+          setBreedOptions((prev) => ({ ...prev, Dog: dogBreeds }));
+        })
+        .catch((error) => console.error("Error fetching dog breeds:", error));
+    } else if (formData.species === "Cat") {
+      fetch("https://api.thecatapi.com/v1/breeds")
+        .then((res) => res.json())
+        .then((data) => {
+          const catBreeds = data.map((breed) => breed.name);
+          setBreedOptions((prev) => ({ ...prev, Cat: catBreeds }));
+        })
+        .catch((error) => console.error("Error fetching cat breeds:", error));
+    }
+  }, [formData.species]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -78,12 +97,12 @@ const EditPet = () => {
     const requiredFields = ["name", "species", "breed", "dateOfBirth"];
     const newErrors = {};
 
-    // ถ้าไม่มีการอัปโหลดไฟล์ใหม่, ให้ตรวจสอบว่า imageUrl มีค่าหรือไม่
+    // Check for image upload
     if (!formData.file && !formData.imageUrl) {
-      newErrors.file = t("uploadImage"); // แจ้งว่าให้เลือกไฟล์
+      newErrors.file = t("uploadImage");
     }
 
-    // ตรวจสอบฟิลด์ที่ต้องการ
+    // Check required fields
     requiredFields.forEach((field) => {
       if (!formData[field]) {
         const fieldName = t(field);
@@ -124,7 +143,7 @@ const EditPet = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setShowConfirmation(true); // แสดง modal เมื่อกด submit
+    setShowConfirmation(true);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -176,75 +195,106 @@ const EditPet = () => {
           <p className="text-red-500 text-sm text-center">{errors.submit}</p>
         )}
 
-        {[
-          { label: "name", type: "text", isRequired: true },
-          { label: "species", type: "text", isRequired: true },
-          { label: "breed", type: "text", isRequired: true },
-          { label: "dateOfBirth", type: "date", isRequired: true },
-        ].map(({ label, type, isRequired }) => (
-          <div key={label}>
-            <label className="block text-gray-700 font-medium mb-1">
-              {t(label)}:{isRequired && <span className="text-red-500">*</span>}{" "}
-              {/* สัญลักษณ์ * สำหรับฟิลด์ที่จำเป็น */}
-            </label>
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("name")}:
             <input
-              type={type}
-              name={label}
-              value={formData[label]}
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 ${
-                errors[label] ? "border-red-500" : "border-gray-300"
-              }`}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
             />
-            {errors[label] && (
-              <p className="text-red-500 text-sm">{errors[label]}</p>
-            )}
-          </div>
-        ))}
+          </label>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("species")}:
+            <select
+              name="species"
+              value={formData.species}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+            >
+              <option value="Dog">{t("dog")}</option>
+              <option value="Cat">{t("cat")}</option>
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("breed")}:
+            <select
+              name="breed"
+              value={formData.breed}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+            >
+              <option value="">{t("selectBreed")}</option>
+              {breedOptions[formData.species]?.map((breed) => (
+                <option key={breed} value={breed}>
+                  {breed}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            {t("dateOfBirth")}:
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+            />
+          </label>
+        </div>
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">
             {t("gender")}:
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+            >
+              <option value="MALE">{t("male")}</option>
+              <option value="FEMALE">{t("female")}</option>
+            </select>
           </label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
-          >
-            <option value="MALE">{t("male")}</option>
-            <option value="FEMALE">{t("female")}</option>
-          </select>
         </div>
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">
             {t("status")}:
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+            >
+              <option value="NORMAL">{t("normal")}</option>
+              <option value="LOST">{t("lost")}</option>
+            </select>
           </label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
-          >
-            <option value="NORMAL">{t("normal")}</option>
-            <option value="LOST">{t("lost")}</option>
-          </select>
         </div>
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">
             {t("bio")}:
+            <textarea
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300"
+            />
           </label>
-          <textarea
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 ${
-              errors.bio ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.bio && <p className="text-red-500 text-sm">{errors.bio}</p>}
         </div>
 
         <div>
@@ -257,13 +307,14 @@ const EditPet = () => {
         </div>
       </form>
 
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        isOpen={showConfirmation}
-        onClose={handleCancelConfirmation}
-        onConfirm={handleConfirmationSubmit}
-        message={t("areYouSure")}
-      />
+      {showConfirmation && (
+        <ConfirmationModal
+          isOpen={showConfirmation}
+          onClose={handleCancelConfirmation}
+          onConfirm={handleConfirmationSubmit}
+          message={t("areYouSure")}
+        />
+      )}
     </div>
   );
 };
