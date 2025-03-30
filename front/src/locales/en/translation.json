@@ -54,5 +54,22 @@
   "history": "History",
   "enterName": "Please enter a name",
   "noRecords": "No records available",
-  "selectBreed": "Select Breed"
+  "selectBreed": "Select Breed",
+  "daily": "Daily",
+  "monthly": "Monthly",
+  "visitors": "Visitors (people)",
+  "months": {
+    "jan": "Jan",
+    "feb": "Feb",
+    "mar": "Mar",
+    "apr": "Apr",
+    "may": "May",
+    "jun": "Jun",
+    "jul": "Jul",
+    "aug": "Aug",
+    "sep": "Sep",
+    "oct": "Oct",
+    "nov": "Nov",
+    "dec": "Dec"
+  }
 }

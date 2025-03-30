@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getScanStatistics } from "../api/scanRecordAPI";  // ใช้ฟังก์ชันจาก api/scanRecordAPI
+import { getScanStatistics } from "../api/scanRecordAPI";
 
 const useScanStats = () => {
     const [stats, setStats] = useState({ daily: {}, monthly: {} });
