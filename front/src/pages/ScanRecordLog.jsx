@@ -31,9 +31,9 @@ const ScanRecordLog = () => {
     const startTime = Date.now();
     try {
       const data = await getScanRecord(page, pagination.pageSize);
-      const scanRecords = data._embedded?.scanRecordResponses || []; // Default to an empty array if undefined
+      const scanRecords = data._embedded?.scanRecordResponses || [];
       setScanRecords(scanRecords);
-  
+
       setPagination({
         currentPage: data.page?.number || 0,
         totalPages: data.page?.totalPages || 0,
@@ -42,7 +42,7 @@ const ScanRecordLog = () => {
       });
     } catch (err) {
       console.error("Failed to fetch scan records:", err);
-      setScanRecords([]); // Set an empty array to show the empty state
+      setScanRecords([]);
     } finally {
       const elapsed = Date.now() - startTime;
       const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
@@ -81,10 +81,10 @@ const ScanRecordLog = () => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-goodBlue text-white rounded-t-lg">
-              <th className="p-3 text-left rounded-tl-lg">Pet</th>
-              <th className="p-3 text-left">Image</th>
-              <th className="p-3 text-left">Address</th>
-              <th className="p-3 text-left rounded-tr-lg">Scanned At</th>
+              <th className="p-3 text-left rounded-tl-lg">{t("pet")}</th>
+              <th className="p-3 text-left">{t("image")}</th>
+              <th className="p-3 text-left">{t("address")}</th>
+              <th className="p-3 text-left rounded-tr-lg">{t("scannedAt")}</th>
             </tr>
           </thead>
           <tbody>
@@ -98,7 +98,10 @@ const ScanRecordLog = () => {
               </tr>
             ) : scanRecords.length === 0 ? (
               <tr>
-                <td colSpan="4" className="text-center text-gray-500 pt-20 text-xl">
+                <td
+                  colSpan="4"
+                  className="text-center text-gray-500 pt-20 text-xl"
+                >
                   {t("noRecords")}
                 </td>
               </tr>
@@ -118,12 +121,14 @@ const ScanRecordLog = () => {
                   <td className="p-3">{record.petName}</td>
                   <td className="p-3">
                     <img
-                      src={record.petImageUrl || "https://via.placeholder.com/50"}
+                      src={
+                        record.petImageUrl || "https://via.placeholder.com/50"
+                      }
                       alt={record.petName}
                       className="w-12 h-12 rounded-full border border-gray-300 object-cover shadow-sm"
                     />
                   </td>
-                  <td className="p-3">{record.address || "N/A"}</td>
+                  <td className="p-3">{record.address || t("noData")}</td>
                   <td className="p-3">
                     {new Date(record.scannedAt).toLocaleString()}
                   </td>
@@ -145,10 +150,11 @@ const ScanRecordLog = () => {
                     : "bg-goodBlue text-white hover:bg-blue-600"
                 }`}
               >
-                Previous
+                {t("previous")}
               </button>
               <span>
-                page {pagination.currentPage + 1} of {pagination.totalPages}
+                {t("page")} {pagination.currentPage + 1} {t("of")}{" "}
+                {pagination.totalPages}
               </span>
               <button
                 onClick={() => handlePageChange(pagination.currentPage + 1)}
@@ -159,7 +165,7 @@ const ScanRecordLog = () => {
                     : "bg-goodBlue text-white hover:bg-blue-600"
                 }`}
               >
-                Next
+                {t("next")}
               </button>
             </>
           )}

@@ -71,5 +71,14 @@
     "oct": "Oct",
     "nov": "Nov",
     "dec": "Dec"
-  }
+  },
+  "pet": "Pet",
+  "image": "Image",
+  "address": "Address",
+  "scannedAt": "Scanned At",
+  "noData": "N/A",
+  "previous": "Previous",
+  "page": "Page",
+  "of": "of",
+  "next": "Next"
 }
