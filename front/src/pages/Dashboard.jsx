@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import useScanStats from "../hooks/useScanStats";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,11 +11,12 @@ import {
   Bar,
   ResponsiveContainer,
 } from "recharts";
-import { PawPrint, Calendar, BarChart3 } from "lucide-react";
+import { PawPrint, Calendar, BarChart3, Globe } from "lucide-react";
 
 const Dashboard = () => {
   const { stats, loading, error } = useScanStats();
-  const [view, setView] = React.useState("daily");
+  const { t } = useTranslation();
+  const [view, setView] = useState("daily");
 
   if (loading) return <div className="text-center text-lg">Loading...</div>;
   if (error)
@@ -24,19 +24,21 @@ const Dashboard = () => {
 
   const dailyData = Object.keys(stats.daily).map((date) => ({
     date,
-    visitors: stats.daily[date],
+    visitors: Math.round(stats.daily[date]),
   }));
 
   const monthlyData = Object.keys(stats.monthly).map((month) => ({
-    month,
-    visitors: stats.monthly[month],
+    month: t(`months.${month.toLowerCase()}`) || month,
+    visitors: Math.round(stats.monthly[month]),
   }));
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-2xl border border-gray-200 max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 flex items-center gap-2 text-blue-600">
-        <PawPrint className="text-yellow-500" /> Overview
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold flex items-center gap-2 text-blue-600">
+          <PawPrint className="text-yellow-500" /> {t("overview")}
+        </h2>
+      </div>
 
       <div className="mb-6 flex justify-center gap-4">
         <button
@@ -47,7 +49,7 @@ const Dashboard = () => {
           }`}
           onClick={() => setView("daily")}
         >
-          <Calendar /> Daily
+          <Calendar /> {t("daily")}
         </button>
         <button
           className={`px-6 py-2 flex items-center gap-2 rounded-full transition-all ${
@@ -57,31 +59,42 @@ const Dashboard = () => {
           }`}
           onClick={() => setView("monthly")}
         >
-          <BarChart3 /> Monthly
+          <BarChart3 /> {t("monthly")}
         </button>
       </div>
 
       <div className="w-full h-96">
         <ResponsiveContainer width="100%" height="100%">
           {view === "daily" ? (
-            <LineChart data={dailyData}>
+            <BarChart data={dailyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
               <XAxis dataKey="date" tick={{ fill: "#666" }} />
-              <YAxis tick={{ fill: "#666" }} />
+              <YAxis
+                tick={{ fill: "#666" }}
+                label={{
+                  value: t("visitors"),
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+                allowDecimals={false}
+              />
               <Tooltip />
               <Legend />
-              <Line
-                type="monotone"
-                dataKey="visitors"
-                stroke="#2563eb"
-                strokeWidth={3}
-              />
-            </LineChart>
+              <Bar dataKey="visitors" fill="#2563eb" radius={[6, 6, 0, 0]} />
+            </BarChart>
           ) : (
             <BarChart data={monthlyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
               <XAxis dataKey="month" tick={{ fill: "#666" }} />
-              <YAxis tick={{ fill: "#666" }} />
+              <YAxis
+                tick={{ fill: "#666" }}
+                label={{
+                  value: t("visitors"),
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+                allowDecimals={false}
+              />
               <Tooltip />
               <Legend />
               <Bar dataKey="visitors" fill="#fbbf24" radius={[6, 6, 0, 0]} />
