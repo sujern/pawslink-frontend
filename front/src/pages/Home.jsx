@@ -50,32 +50,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="bg-gray-900 text-white min-h-screen flex items-center px-8 py-16">
-        <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-7xl mx-auto">
-          <div className="relative">
-            <img
-              src="https://pawslink-bucket.s3.ap-southeast-2.amazonaws.com/themes.png"
-              alt="Themes Example"
-              className="w-[450px] h-auto rounded-lg shadow-lg hover:scale-105 transition-transform"
-            />
-          </div>
-          <div className="max-w-lg text-center md:text-left">
-            <h2 className="text-6xl font-bold mb-6 leading-tight">
-              Create and Customize your PawsLink in minutes
-            </h2>
-            <p className="text-gray-400 text-lg mb-8">
-              Create and Customize your PawsLink in minutes
-            </p>
-            <button
-              onClick={() => navigate("/login")}
-              className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition-all"
-            >
-              Get Start
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div className="bg-gradient-to-r from-indigo-800 to-purple-800 text-white min-h-screen flex items-center px-8 py-16">
         <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-7xl mx-auto">
           <div className="max-w-lg text-center md:text-left">
