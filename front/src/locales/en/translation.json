@@ -80,5 +80,8 @@
   "previous": "Previous",
   "page": "Page",
   "of": "of",
-  "next": "Next"
+  "next": "Next",
+  "contactType": "Contact Type",
+  "contactValue": "Contact Value",
+  "enterContactValue": "Please enter contact value"
 }
