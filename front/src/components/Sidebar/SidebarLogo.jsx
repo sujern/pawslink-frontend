@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import logo from "/logo.png";
+import logo1 from "/logo1.png";
 
 const SidebarLogo = () => {
   const { t } = useTranslation()
@@ -7,7 +7,7 @@ const SidebarLogo = () => {
   return (
     <div className="p-3">
       <h1 className="text-2xl font-semibold text-gray-800 flex items-center">
-        <img src={logo} className="w-20 h-20" />
+        <img src={logo1} className="w-25 h-20" />
         {t("appName")}
       </h1>
     </div>
