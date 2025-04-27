@@ -8,7 +8,7 @@ import Layout from "./components/Layout";
 import PetProfileList from "./pages/PetProfileList";
 import ScanRecordLog from "./pages/ScanRecordLog";
 import ContactList from "./pages/ContactList";
-import Overview from "./pages/Overview";
+import NotFound from "./pages/NotFound";
 import PublicPetProfile from "./pages/PublicPetProfile";
 import PetDetails from "./pages/PetDetails";
 import EditPet from "./pages/EditPet";
@@ -41,6 +41,7 @@ function App() {
         <Route path="/public/:profileUrl" element={<PublicPetProfile />} />
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
