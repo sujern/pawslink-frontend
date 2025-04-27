@@ -18,18 +18,31 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile, onFound }) => {
   };
 
   return (
-    <div className="bg-gray-100 rounded-xl shadow-md p-4 hover:bg-gray-50 transition relative group">
-      <Link to={`/pets/${pet.petId}`} className="flex items-center space-x-4">
+    <div className="relative bg-white rounded-2xl shadow-md hover:shadow-lg transition-all p-4 flex items-center gap-6 group">
+      {/* Profile Image */}
+      <Link
+        to={`/pets/${pet.petId}`}
+        className="flex-shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
         <img
           src={pet.imageUrl || "https://via.placeholder.com/100"}
           alt={pet.name}
-          className="w-20 h-20 rounded-full object-cover border border-gray-300"
+          className="w-20 h-20 rounded-full object-cover border-4 border-blue-300 shadow-sm"
         />
-        <div>
-          <h2 className="text-lg font-semibold text-gray-800">{pet.name}</h2>
-          <p className="text-gray-500">{pet.breed}</p>
+      </Link>
+
+      {/* Pet Info */}
+      <div className="flex-1 min-w-0">
+        <Link
+          to={`/pets/${pet.petId}`}
+          className="block"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="text-lg font-bold text-gray-800 truncate">{pet.name}</h2>
+          <p className="text-gray-500 truncate">{pet.breed || "-"}</p>
           <span
-            className={`inline-block px-3 py-1 rounded-full text-xs font-medium mt-1 ${
+            className={`inline-block mt-1 px-3 py-0.5 rounded-full text-xs font-semibold capitalize ${
               pet.status === "NORMAL"
                 ? "bg-green-100 text-green-700"
                 : "bg-yellow-100 text-yellow-700"
@@ -37,32 +50,29 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile, onFound }) => {
           >
             {pet.status.toLowerCase()}
           </span>
-        </div>
-      </Link>
+        </Link>
+      </div>
 
-      <div className="absolute top-1/2 -translate-y-1/2 right-4 flex space-x-2 items-center gap-4">
+      {/* Action Buttons */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         {pet.status === "LOST" && (
-          <>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onFound(pet.petId);
-              }}
-              className="flex justify-center items-center bg-white hover:bg-gray-300 text-green-600 w-10 h-10 rounded-full shadow-md transition"
-              title="Mark as Found"
-            >
-              <CheckCircle className="w-5 h-5" />
-            </button>
-
-            <div className="h-10 w-px bg-gray-300 mx-4"></div>
-          </>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onFound(pet.petId);
+            }}
+            className="flex items-center justify-center bg-green-100 hover:bg-green-200 text-green-600 w-10 h-10 rounded-full shadow-sm transition"
+            title="Mark as Found"
+          >
+            <CheckCircle className="w-5 h-5" />
+          </button>
         )}
         <button
           onClick={(e) => {
             e.stopPropagation();
             onOpenPublicProfile(pet.profileUrl);
           }}
-          className="flex justify-center items-center bg-blue-200 hover:bg-blue-300 text-blue-600 w-10 h-10 rounded-full shadow-md transition"
+          className="flex items-center justify-center bg-blue-100 hover:bg-blue-200 text-blue-600 w-10 h-10 rounded-full shadow-sm transition"
           title="Open Public Profile"
         >
           <Globe className="w-5 h-5" />
@@ -72,8 +82,8 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile, onFound }) => {
             e.stopPropagation();
             handleShowQR();
           }}
-          className="flex justify-center items-center bg-green-200 hover:bg-green-300 text-green-600 w-10 h-10 rounded-full shadow-md transition"
-          title="QR Code Profile"
+          className="flex items-center justify-center bg-green-100 hover:bg-green-200 text-green-600 w-10 h-10 rounded-full shadow-sm transition"
+          title="QR Code"
         >
           <ScanQrCode className="w-5 h-5" />
         </button>
@@ -82,7 +92,7 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile, onFound }) => {
             e.stopPropagation();
             onEdit(pet.petId);
           }}
-          className="flex justify-center items-center bg-yellow-200 hover:bg-yellow-300 text-yellow-600 w-10 h-10 rounded-full shadow-md transition"
+          className="flex items-center justify-center bg-yellow-100 hover:bg-yellow-200 text-yellow-600 w-10 h-10 rounded-full shadow-sm transition"
           title="Edit"
         >
           <Pencil className="w-5 h-5" />
@@ -92,13 +102,14 @@ const PetCard = ({ pet, onEdit, onDelete, onOpenPublicProfile, onFound }) => {
             e.stopPropagation();
             onDelete(pet.petId);
           }}
-          className="flex justify-center items-center bg-red-200 hover:bg-red-300 text-red-600 w-10 h-10 rounded-full shadow-md transition"
+          className="flex items-center justify-center bg-red-100 hover:bg-red-200 text-red-600 w-10 h-10 rounded-full shadow-sm transition"
           title="Delete"
         >
           <Trash2 className="w-5 h-5" />
         </button>
       </div>
 
+      {/* QR Modal */}
       <QRCodeModal
         isOpen={showQRModal}
         qrCode={qrCode}
@@ -121,6 +132,7 @@ PetCard.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onOpenPublicProfile: PropTypes.func.isRequired,
+  onFound: PropTypes.func,
 };
 
 export default PetCard;
