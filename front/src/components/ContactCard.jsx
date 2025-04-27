@@ -1,16 +1,16 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Mail, Phone, Link as LinkIcon } from "lucide-react";
 import PropTypes from "prop-types";
 
 const ContactCard = ({ contact, onEdit, onDelete }) => {
   const getContactLink = (type, value) => {
     if (type === "email") {
-      return `mailto:${value}`;
+      return { href: `mailto:${value}`, icon: <Mail className="w-5 h-5 text-blue-500" /> };
     } else if (type === "line") {
-      return `https://line.me/ti/p/~${value}`;
+      return { href: `https://line.me/ti/p/~${value}`, icon: <LinkIcon className="w-5 h-5 text-green-500" /> };
     } else if (value.startsWith("http://") || value.startsWith("https://")) {
-      return value;
+      return { href: value, icon: <LinkIcon className="w-5 h-5 text-blue-400" /> };
     } else if (/^\d+$/.test(value)) {
-      return `tel:${value}`;
+      return { href: `tel:${value}`, icon: <Phone className="w-5 h-5 text-green-600" /> };
     } else {
       return null;
     }
@@ -19,37 +19,45 @@ const ContactCard = ({ contact, onEdit, onDelete }) => {
   const contactLink = getContactLink(contact.contactType, contact.contactValue);
 
   return (
-    <li className="bg-gray-100 rounded-xl shadow-md p-4 hover:bg-gray-50 transition relative group flex justify-between items-center">
-      <div>
-        <h2 className="text-lg font-semibold text-gray-800">
-          {contact.contactType}
-        </h2>
+    <li className="flex items-center justify-between bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition">
+      <div className="flex items-center gap-4">
+        {/* Logo / Icon */}
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
+          {contactLink?.icon || <LinkIcon className="w-5 h-5 text-gray-400" />}
+        </div>
 
-        {contactLink ? (
-          <a
-            href={contactLink}
-            target={contact.contactType === "email" || contact.contactType === "line" ? "_blank" : "_self"}
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            {contact.contactValue}
-          </a>
-        ) : (
-          <p className="text-gray-600">{contact.contactValue}</p>
-        )}
+        {/* Contact Details */}
+        <div>
+          <h2 className="text-lg font-bold text-gray-800 capitalize">
+            {contact.contactType}
+          </h2>
+          {contactLink ? (
+            <a
+              href={contactLink.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline break-words"
+            >
+              {contact.contactValue}
+            </a>
+          ) : (
+            <p className="text-gray-500">{contact.contactValue}</p>
+          )}
+        </div>
       </div>
 
+      {/* Action Buttons */}
       <div className="flex gap-2">
         <button
           onClick={() => onEdit(contact.contactId)}
-          className="flex justify-center items-center bg-yellow-200 hover:bg-yellow-300 text-yellow-600 w-10 h-10 rounded-full shadow-md transition"
+          className="flex items-center justify-center bg-yellow-100 hover:bg-yellow-200 text-yellow-600 w-10 h-10 rounded-full shadow-sm"
         >
           <Pencil className="w-5 h-5" />
         </button>
 
         <button
           onClick={() => onDelete(contact.contactId)}
-          className="flex justify-center items-center bg-red-200 hover:bg-red-300 text-red-600 w-10 h-10 rounded-full shadow-md transition"
+          className="flex items-center justify-center bg-red-100 hover:bg-red-200 text-red-600 w-10 h-10 rounded-full shadow-sm"
         >
           <Trash2 className="w-5 h-5" />
         </button>
