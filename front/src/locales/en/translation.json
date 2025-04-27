@@ -83,5 +83,6 @@
   "next": "Next",
   "contactType": "Contact Type",
   "contactValue": "Contact Value",
-  "enterContactValue": "Please enter contact value"
+  "enterContactValue": "Please enter contact value",
+  "shareLocation": "Share your location"
 }

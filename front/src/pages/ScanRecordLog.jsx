@@ -15,7 +15,6 @@ const ScanRecordLog = () => {
     pageSize: 8,
     totalElements: 0,
   });
-
   const { token } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -70,29 +69,29 @@ const ScanRecordLog = () => {
   }
 
   return (
-    <div className="min-h-screen pt-12 px-4 sm:px-8">
-      <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-6">
+    <div className="min-h-screen pt-12">
+      <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-6 px-8">
         <h1 className="text-2xl text-gray-800">
           {t("history")}{" "}
           {pagination.totalElements > 0 ? `(${pagination.totalElements})` : ""}
         </h1>
       </div>
 
-      <div className="overflow-x-auto bg-white p-6 rounded-2xl shadow-md">
-        <table className="w-full text-sm text-gray-700">
-          <thead className="bg-goodBlue text-white rounded-t-lg">
-            <tr>
-              <th className="p-4 text-left font-semibold">{t("pet")}</th>
-              <th className="p-4 text-left font-semibold">{t("image")}</th>
-              <th className="p-4 text-left font-semibold">{t("address")}</th>
-              <th className="p-4 text-left font-semibold">{t("scannedAt")}</th>
+      <div className="mx-auto bg-white p-4 rounded-lg">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-goodBlue text-white rounded-t-lg">
+              <th className="p-3 text-left rounded-tl-lg">{t("pet")}</th>
+              <th className="p-3 text-left">{t("image")}</th>
+              <th className="p-3 text-left">{t("address")}</th>
+              <th className="p-3 text-left rounded-tr-lg">{t("scannedAt")}</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="4" className="h-[300px]">
-                  <div className="flex justify-center items-center h-full">
+                <td colSpan="4" className="py-6">
+                  <div className="flex justify-center items-center">
                     <Loader />
                   </div>
                 </td>
@@ -101,7 +100,7 @@ const ScanRecordLog = () => {
               <tr>
                 <td
                   colSpan="4"
-                  className="text-center py-12 text-gray-500 text-lg"
+                  className="text-center text-gray-500 pt-20 text-xl"
                 >
                   {t("noRecords")}
                 </td>
@@ -110,7 +109,7 @@ const ScanRecordLog = () => {
               scanRecords.map((record) => (
                 <tr
                   key={record.scanId}
-                  className="border-b hover:bg-gray-100 transition cursor-pointer"
+                  className="border-b cursor-pointer hover:bg-gray-100"
                   onClick={() =>
                     window.open(
                       `https://www.google.com/maps/search/?api=1&query=${record.latitude},${record.longitude}`,
@@ -119,18 +118,18 @@ const ScanRecordLog = () => {
                     )
                   }
                 >
-                  <td className="p-4">{record.petName}</td>
-                  <td className="p-4">
+                  <td className="p-3">{record.petName}</td>
+                  <td className="p-3">
                     <img
                       src={
                         record.petImageUrl || "https://via.placeholder.com/50"
                       }
                       alt={record.petName}
-                      className="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm"
+                      className="w-12 h-12 rounded-full border border-gray-300 object-cover shadow-sm"
                     />
                   </td>
-                  <td className="p-4">{record.address || t("noData")}</td>
-                  <td className="p-4">
+                  <td className="p-3">{record.address || t("noData")}</td>
+                  <td className="p-3">
                     {new Date(record.scannedAt).toLocaleString()}
                   </td>
                 </tr>
@@ -139,38 +138,38 @@ const ScanRecordLog = () => {
           </tbody>
         </table>
 
-        {pagination.totalElements > pagination.pageSize && (
-          <div className="flex justify-between items-center mt-6">
-            <button
-              onClick={() => handlePageChange(pagination.currentPage - 1)}
-              disabled={pagination.currentPage === 0}
-              className={`px-6 py-2 rounded-full font-semibold transition ${
-                pagination.currentPage === 0
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-            >
-              {t("previous")}
-            </button>
-
-            <span className="text-gray-600 font-medium">
-              {t("page")} {pagination.currentPage + 1} {t("of")}{" "}
-              {pagination.totalPages}
-            </span>
-
-            <button
-              onClick={() => handlePageChange(pagination.currentPage + 1)}
-              disabled={pagination.currentPage + 1 === pagination.totalPages}
-              className={`px-6 py-2 rounded-full font-semibold transition ${
-                pagination.currentPage + 1 === pagination.totalPages
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-            >
-              {t("next")}
-            </button>
-          </div>
-        )}
+        <div className="flex justify-between items-center mt-8 px-8">
+          {pagination.totalElements > pagination.pageSize && (
+            <>
+              <button
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 0}
+                className={`px-4 py-2 rounded-full ${
+                  pagination.currentPage === 0
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-goodBlue text-white hover:bg-blue-600"
+                }`}
+              >
+                {t("previous")}
+              </button>
+              <span>
+                {t("page")} {pagination.currentPage + 1} {t("of")}{" "}
+                {pagination.totalPages}
+              </span>
+              <button
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                disabled={pagination.currentPage + 1 === pagination.totalPages}
+                className={`px-4 py-2 rounded-full ${
+                  pagination.currentPage + 1 === pagination.totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-goodBlue text-white hover:bg-blue-600"
+                }`}
+              >
+                {t("next")}
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

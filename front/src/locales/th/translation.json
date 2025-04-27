@@ -86,5 +86,6 @@
   "next": "ถัดไป",
   "contactType": "ประเภทข้อมูลติดต่อ",
   "contactValue": "ข้อมูลติดต่อ",
-  "enterContactValue": "กรุณากรอกข้อมูลติดต่อ"
+  "enterContactValue": "กรุณากรอกข้อมูลติดต่อ",
+  "shareLocation": "แชร์ตำแหน่งของคุณ"
 }
