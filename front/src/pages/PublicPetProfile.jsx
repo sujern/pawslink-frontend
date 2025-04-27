@@ -3,12 +3,12 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import usePublicPet from "../hooks/usePublicPet";
 import useLocationPermission from "../hooks/useLocationPermission";
+import NotFound from "./NotFound";
 
 const PublicPetProfile = () => {
   const { profileUrl } = useParams();
   const { pet, loading, error } = usePublicPet(profileUrl);
   const { t } = useTranslation();
-  // const { locationError } = useLocationPermission(pet?.petId);
   const { locationError, isRequestingLocation, requestLocationPermission } =
     useLocationPermission(pet?.petId);
 
@@ -89,11 +89,7 @@ const PublicPetProfile = () => {
   }
 
   if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <p className="text-red-500 text-xl">{error}</p>
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (

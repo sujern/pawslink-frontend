@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getPetById } from "../api/petService.js";
 import { useTranslation } from "react-i18next";
 import useAuth from "../hooks/useAuth.js";
+import NotFound from "./NotFound.jsx";
 
 const PetDetails = () => {
   const { petId } = useParams();
@@ -39,12 +40,12 @@ const PetDetails = () => {
   }
 
   if (error) {
-    return <p className="text-center text-red-500">{error}</p>;
+    return <NotFound />;
   }
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      {/* Header Section */}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">{pet.name}</h1>
         <Link
@@ -55,7 +56,6 @@ const PetDetails = () => {
         </Link>
       </div>
 
-      {/* Pet Image and Status */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
         <img
           src={pet.imageUrl || "https://via.placeholder.com/200"}
@@ -80,7 +80,6 @@ const PetDetails = () => {
         </div>
       </div>
 
-      {/* Pet Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div className="p-4 border rounded-lg bg-gray-50">
           <h3 className="text-sm font-medium text-gray-500">{t("species")}</h3>
